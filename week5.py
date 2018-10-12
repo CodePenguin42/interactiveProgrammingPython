@@ -41,7 +41,7 @@ import simplegui, math
 
 #globals
 RADIUS = 20
-BALL = [[50, 100, "Red"], [150, 100, "Green"], [250, 100, "Blue"]]
+BALLS = [[50, 100, "Red"], [150, 100, "Green"], [250, 100, "Blue"]]
 
 #helper and handler - distance
 def distance(p, q):
@@ -49,15 +49,14 @@ def distance(p, q):
 
 #helpers and handlers - click
 def on_click(pos):
-    for ball in BALL:
+    for ball in BALLS:
         if distance(pos, ball) < RADIUS:
-            print str(BALL[ball][2])
+            print "Clicked the " + str(BALLS[BALLS.index(ball)][2]) + " ball"
 
 #helpers and handlers - draw
 def draw(canvas):
-    canvas.draw_circle([BALL[0][0], BALL[0][1]], RADIUS, 1, BALL[0][2], BALL[0][2])
-    canvas.draw_circle([BALL[1][0], BALL[1][1]], RADIUS, 1, BALL[1][2], BALL[1][2])
-    canvas.draw_circle([BALL[2][0], BALL[2][1]], RADIUS, 1, BALL[2][2], BALL[2][2])
+    for ball in BALLS:
+        canvas.draw_circle([ball[0], ball[1]], RADIUS, 1, ball[2], ball[2])
 
 #create and register
 frame = simplegui.create_frame("Echo click", 300, 200)
@@ -67,4 +66,4 @@ frame.set_draw_handler(draw)
 #start
 frame.start()
 
-#okay so look at this a little later and finish the for statment later...
+#3) return position of element in list
