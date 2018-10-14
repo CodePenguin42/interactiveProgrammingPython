@@ -1,21 +1,21 @@
 #python learning 2
 #week 5
 
-#notes from lectures - more on Lists
-#when copying the value of a tuple use list e.g. list(tuple); to create a mutable list
-#list.append(n), list.pop(n), list.index(n), remove(n)
-#pop removes the selected element fromt he list and returns it
-#BUT len(list)
-#in can match numbers or whole strings
-#if x in list - returns t/f
-#for x in list: action - performs the action for every x in list
-#cannot remove from a list that you are iterating over, you have to create a separate list of stuff to remove, then if there is stuff in it remove those things from the origional list
-#OR build a new list of the things you want to keep
-#can store multiple pieces of data about an object in a list e.g ball = [1,2,"green"]; x,y,colour
-#build something that works, test it, change it a little, test, change etc.
-#boolean flags, keep track if something has happened or not
+#notes from lectures - Mouse input and More Lists
+    #when copying the value of a tuple use list e.g. list(tuple); to create a mutable list
+    #list.append(n), list.pop(n), list.index(n), remove(n)
+    #pop removes the selected element fromt he list and returns it
+    #BUT len(list)
+    #in can match numbers or whole strings
+    #if x in list - returns t/f
+    #for x in list: action - performs the action for every x in list
+    #cannot remove from a list that you are iterating over, you have to create a separate list of stuff to remove, then if there is stuff in it remove those things from the origional list
+    #OR build a new list of the things you want to keep
+    #can store multiple pieces of data about an object in a list e.g ball = [1,2,"green"]; x,y,colour
+    #build something that works, test it, change it a little, test, change etc.
+    #boolean flags, keep track if something has happened or not
 
-#Practice Exercise for Mouse and List Methods
+#Practice Exercise for Mouse and List Methods - 5a
 #1) print mouse poition to console
 
 #imports
@@ -179,3 +179,17 @@ frame.start()
     #you can iterate in 2D you just need multiple iterators e.g. i, j, k (like the roots of -1)
     #often for i in len(list) is used rather than just iterating over list,
     #remember the logic goes in the draw function
+
+
+#Notes from lectures - Dictionaries and images
+    #can have inverse dictionary matches, I have now seen them go back and modify old code so it is better
+    #dictionaries use curly brackets
+    #use pop when transferring data e.g., from a list to a dictionary
+    #importing images is simple in terms of the way it integrates into the style I already know, but you have to think about the values you give it.
+    #large images will need laoding time, rerun your program after a few seconds after it has downloaded to your browser
+    #filters are like DNA replication, you make a new list of the pieces you want copying from the origional
+    #omg this guy is monotonic, really tallented at what he does just puts me to sleep with his voice...
+    #off by one error, when you start your index at 1 not 0
+    #dictionaries are not considered to be ordered, you can't use the -1 trick to get the last element, or slices/sections, dictionaries may print out in a different order to the one you typed it in,
+    #can mutate a dictionary by adding in something new e.g. d[500] = "wow", will add a new entry key = 500, value = "wow", can add keys that aren't lists or dictionaries (any mutable types). Only immutable things can be keys in the dictionary. Values can be mutable
+    #simplegui will not complain at a broken url, will get 0 of width or height of an image that hasn't loaded
