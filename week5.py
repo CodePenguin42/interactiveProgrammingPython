@@ -193,3 +193,120 @@ frame.start()
     #dictionaries are not considered to be ordered, you can't use the -1 trick to get the last element, or slices/sections, dictionaries may print out in a different order to the one you typed it in,
     #can mutate a dictionary by adding in something new e.g. d[500] = "wow", will add a new entry key = 500, value = "wow", can add keys that aren't lists or dictionaries (any mutable types). Only immutable things can be keys in the dictionary. Values can be mutable
     #simplegui will not complain at a broken url, will get 0 of width or height of an image that hasn't loaded
+    #dictionaries don't start with def
+
+#Practice exercies for Dictionaries and Images
+
+#1) Practice dictionary
+day_to_number = {
+    "Monday" : 0,
+    "Tuesday" : 1,
+    "Wednesday" : 2,
+    "Thursday" : 3,
+    "Friday" : 4,
+    "Saturday" : 5,
+    "Sunday" : 6
+}
+
+#test:
+print day_to_number["Monday"]
+
+#2) Another practic dictionary
+name_lookup = {
+    "Joe" : "Warren",
+    "Scott" : "Rixner",
+    "John" : "Greiner",
+    "Stephen" : "Wong"
+}
+
+#test:
+print name_lookup["Scott"]
+
+#debugging and image load
+#imports
+import simplegui
+
+#load an image
+test_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/Race-Car.png")
+test_image_size = [135, 164]
+test_image_center = [test_image_size[0] // 2, test_image_size[1] // 2]
+
+#helpers and handlers - draw
+def draw(canvas):
+    canvas.draw_image(test_image, test_image_center, test_image_size, test_image_center, test_image_size)
+
+#create and register
+frame = simplegui.create_frame("test_image", test_image_size[0], test_image_size[1])
+frame.set_draw_handler(draw)
+
+#start
+frame.start()
+
+#the draw image has five parts:
+    #1 - simplegui.load_image(URL) - loading the image you want
+    #2 & 3 - the center and size of the portion of the image you want to load
+    #4 & 5 - the center and size of the image as you want it on the canvas.
+#this allows you a greater freedom to pick which part of the image and scale it.
+
+#4) move an image to a click
+#imports
+import simplegui
+
+#globals
+HEIGHT = 400
+WIDTH = 300
+position = [WIDTH // 2, HEIGHT // 2]
+
+#helpers and handlers - click
+def click(pos):
+    global position
+    position = list(pos)
+
+#helpers and handlers - image load
+#MUST LOAD THE IMAGE BEFORE CALCULATING ITS SIZE
+image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/asteroid.png")
+image_size = [image.get_width(), image.get_height()]
+image_center = [image_size[0] // 2, image_size[1] // 2]
+
+#helpers and handlers - draw
+def draw(canvas):
+    canvas.draw_image(image, image_center, image_size, position, image_size)
+
+#create and register
+frame = simplegui.create_frame("asteroid", WIDTH, HEIGHT)
+frame.set_draw_handler(draw)
+frame.set_mouseclick_handler(click)
+
+
+#start
+frame.start()
+
+#5) Load a random image
+#imports
+import simplegui
+
+#globals
+WIDTH = 400
+HEIGHT = 400
+CENTER = [WIDTH // 2, HEIGHT // 2]
+
+#helpers and handlers - image
+image = simplegui.load_image("https://upload.wikimedia.org/wikipedia/commons/b/b2/Hausziege_04.jpg")
+image_size = [image.get_width(), image.get_height()]
+scale = [image_size[0] // WIDTH, image_size[1] // HEIGHT]
+image_size_scaled = [image_size[0] // scale[0], image_size[1] // scale[1]]
+image_center = [image_size[0] // 2, image_size[1] // 2]
+
+
+#helpers and handlers - draw
+def draw(canvas):
+    canvas.draw_image(image, image_center, image_size, CENTER, image_size_scaled)
+    #keep an eye on origional image and canvas image sizes
+
+
+#register and create
+frame = simplegui.create_frame("test image", WIDTH, HEIGHT)
+frame.set_draw_handler(draw)
+
+#start
+frame.start()
