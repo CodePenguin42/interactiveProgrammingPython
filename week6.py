@@ -127,5 +127,61 @@ frame.start()
 
 #Interesting principals
     #drawing an image relative to a box then resizing that box, or moving it's center, then redrawing everthing relative to that
-    #every handler in the object also needs self
-    #
+    #every handler in the object also needs self, not just tbe usual
+
+# Practice exercises Part 1
+# 1) Make an empty class called Tile
+class Tile:
+    pass
+
+# 2)  Create two instances of Tile
+tile_one = Tile()
+tile_two = Tile()
+
+# 3) create two numbered tiles
+class Tile:
+    def __init__(self, num):
+        self.number = num
+
+tile_one = Tile(3)
+tile_two = Tile(4)
+
+# 4) create a get number method (AKA a getter method)
+class Tile:
+
+    def __init__(self, num):
+        self.number = num
+    #changing the name inside the class to number, rather than the varible num
+
+    def get_number(self):
+        return self.number
+    #I think num is not an argument here as it isn't changing but it is defined in the global scope
+
+tile_one = Tile(3)
+tile_two = Tile(4)
+#creating two instances of tile.
+
+print tile_one.get_number()
+print tile_two.get_number()
+#object.method(), need the paren
+
+# 5) Add exposed and hidden class
+class Tile:
+
+    #initialse the class
+    def __init__(self, num, exp):
+        self.number = num
+        self.exposed = exp
+
+    #create interesting methods so it can do stuff
+    def get_number(self):
+        return self.number
+
+    def is_exposed(self):
+        return self.exposed
+
+    def expose_tile(self, exposed):
+        self.exposed = True
+
+    def hide_tile(self, exposed):
+        self.exposed = False
