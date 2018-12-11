@@ -185,3 +185,338 @@ class Tile:
 
     def hide_tile(self, exposed):
         self.exposed = False
+
+#All the data relating to the tile is now grouped together in one place, rather than separate like in the memory game where things are grouped relative to position and there is a whole new variable for each state.
+
+# 6) Add a __str__ method to give a status update
+class Tile:
+
+    def __init__(self, num, exp):
+        self.number = num
+        self.exposed = exp
+
+    def __str__(self):
+        return "Number is " + str(self.number) + ", exposed is " + str(self.exposed)
+
+    def get_number(self):
+        return self.number
+
+    def is_exposed(self):
+        return self.exposed
+
+    def expose_tile(self, exposed):
+        self.expose = True
+
+    def hide_tile(self, exposed):
+        self.exposed = False
+
+#Test it!
+tile_one = Tile(3, True)
+print tile_one
+
+#prints...
+Number is 3, exposed is True
+
+# 7) Add in the draw function
+    #facedown = green polygon
+    #faceup = text at tile location
+    #add location of tile class and implement draw method inside draw function as yoou need to pass it canvas
+    #use bottom left hand corner as origin point for each tile
+
+# imports
+import simplegui
+
+# globals
+TILE_WIDTH = 50
+TILE_HEIGHT = 100
+
+# imports, globals, handlers, create, register, all exist outside the Tile class
+
+class Tile:
+
+    def __init__(self, num, exp, pos):
+        self.number = num
+        self.exposed = exp
+        self.position = pos
+
+    def __str__(self):
+        return "Number is %s, exposed is %s." % (self.number, self.exposed)
+        # I like this method, less messing with " and +
+
+    def get_number(self):
+        return self.number
+
+    def is_exposed(self):
+        return self.exposed
+
+    def expose_tile(self, exposed):
+        self.expose = True
+
+    def hide_tile(self, exposed):
+        self.exposed = False
+
+    def draw_tile(self, canvas):
+        pos = self.position
+        # redefining this inside the draw function
+        if self.exposed:
+            text_position = [pos[0] + 0.2 * TILE_WIDTH, pos[1] - 0.3 * TILE_HEIGHT]
+            #Modify the position of the text using a multiplier so the text position scales with the dimensions of the tile
+            canvas.draw_text(str(self.number), text_position, TILE_WIDTH, "White")
+        else:
+            tile_corners = (pos, [pos[0], pos[1] - TILE_HEIGHT], [pos[0] + TILE_WIDTH, pos[1] - TILE_HEIGHT], [pos[0] + TILE_WIDTH, pos[1]])
+            # starting from bottom left, clockwise
+            canvas.draw_polygon(tile_corners, 1, "Green", "Green")
+
+# design one tile using the variables of the class and globals, not thinking about it as part of a whole design of tiles, that comes later and outside the class, or perhaps in a class of it's own.
+
+# draw handler
+def draw(canvas):
+    tile_one.draw_tile(canvas)
+    tile_two.draw_tile(canvas)
+    # These are needed to be created manually, could make a button to add more
+    # Also the code to draw tiles appears before the code to make them. Kinda odd - will figure it out eventually
+
+# create frame, add extras
+frame = simplegui.create_frame("Pairs", 2 * TILE_WIDTH, TILE_HEIGHT)
+# The '2' here will need to be dynamically updates as you add in more tiles
+frame.set_draw_handler(draw)
+# This calls the draw function that in return uses the draw_tile method
+
+# create two tiles
+tile_one = Tile(3, True, [0, TILE_HEIGHT])
+tile_two = Tile(5, False, [TILE_WIDTH, TILE_HEIGHT])
+# the positions of the tile is entered manually, need a better way of doing this, again this lives outside the class
+
+
+# Start
+frame.start()
+
+# Notes:
+    # they are using the bottom left corner as it is the same reference frame as draw_text, also they defined things anti-clockwise
+    # sing it with me "imports, globals, class, draw handler, create frame, create objects, start"
+    # this is a different style of thinking, focusing on one specific part of the game rather than interpolating the structure of the variables from the structure of the game. More flexible and easier to build up iterations of.
+    # pos is reserved for the location of the click, use loc for refering to the spacial coords of the card
+
+# 8) Changing state
+    # put the logic of the game in a method so it isn't clogging up a click or draw handler.
+
+# imports
+import simplegui
+
+# globals
+TILE_WIDTH = 50
+TILE_HEIGHT = 100
+
+# class
+class Tile:
+
+    # initialise the class and assign attributes
+    def __init__(self, num, exp, loc):
+        self.number = num
+        self.exposed = exp
+        self.location = loc
+
+    # define a human friendly descriptive string
+    def __str__(self):
+        return "Number is %s, exposed is %s" % (self.number, self.exposed)
+
+    # get the tile number
+    def get_number(self):
+        return self.number
+
+    # return state of a tile
+    def is_exposed(self):
+        return self.exposed
+
+    # flip a tile up
+    def expose_tile(self):
+        self.exposed = True
+
+    # flip a tile down
+    def hide_tile(self):
+        self.exposed = False
+
+    # determind if tile has been clicked
+    def is_selected(self, pos):
+        inside_hor = self.location[0] <= pos[0] < self.location[0] + TILE_WIDTH
+        inside_vert = self.location[1] - TILE_HEIGHT <= pos[1] <= self.location[1]
+        return inside_hor and inside_vert
+        # so inside_hor and inside_vert will return True or False - without having to use and in an if
+        # this is much neater and easier to read, and mathematically intuitive
+
+    # draw a tile based on state
+    def draw_tile(self, canvas):
+        loc = self.location
+        if self.exposed:
+            text_location = [loc[0] + 0.2 * TILE_WIDTH, loc[1] - 0.3 * TILE_HEIGHT]
+            canvas.draw_text(str(self.number), text_location, TILE_WIDTH, "White")
+        else:
+            tile_corners = (loc, [loc[0], loc[1] - TILE_HEIGHT], [loc[0] + TILE_WIDTH, loc[1] - TILE_HEIGHT], [loc[0] + TILE_WIDTH, loc[1]])
+            canvas.draw_polygon(tile_corners, 1, "Green", "Green")
+
+# handlers
+def draw(canvas):
+    tile_one.draw_tile(canvas)
+    tile_two.draw_tile(canvas)
+
+def click(pos):
+    if tile_one.is_selected(pos):
+        tile_one.hide_tile()
+    if tile_two.is_selected(pos):
+        tile_two.expose_tile()
+
+# create frame and register
+frame = simplegui.create_frame("Pairs", 2 * TILE_WIDTH, TILE_HEIGHT)
+frame.set_draw_handler(draw)
+frame.set_mouseclick_handler(click)
+
+# create tiles
+tile_one = Tile(3, True, [0, TILE_HEIGHT])
+tile_two = Tile(5, False, [TILE_WIDTH, TILE_HEIGHT])
+
+# start frame
+frame.start()
+
+# Notes
+    # so hide and expose only take self as arguments, you only need to include arguments that are coming in from outside the class e.g. where you have clicked, or if a button changes something
+    # this is a kind of boring program, it only had two tiles and you can only change the states once to improve it you would have to:
+        # generate and randomly shuffle a deck of tiles
+        # toggle the hidden exposed states
+        # lay cards out in a grid and draw them - probably using two for iterators and a deck object
+        # have win and loss conditions
+            # would the logic for this still be in the draw handler or in the game class
+            # you can see where the bottom up structure of django comes from
+
+# More practice exercises
+# build a character / avatar that has specified visual characterstics and two gold stashes
+# methods needed : find gold, bury gold, encounter fairy
+
+# class
+class Avatar:
+
+    def __init__(self, name, hair, initial_gold):
+        self.name = name
+        self.hair_colour = hair
+        self.gold_in_bag = initial_gold
+        self.burried_gold = 0.0
+
+    def __str__(self):
+        return "%s has shining %s hair, a bag of %s gold, and a hidden stash of %s gold pieces." % (self.name, self.hair_colour, self.gold_in_bag, self.burried_gold)
+
+    def find_gold(self, amount):
+        self.gold_in_bag += amount
+
+    def bury_gold(self, amount):
+        self.gold_in_bag -= amount
+        self.burried_gold += amount
+
+    def sprinkled_with_fairy_dust(self, multiplier):
+        self.gold_in_bag *= multiplier
+
+# Test
+Alice = Avatar("Alice", "blonde", 10)
+# the name and hair colour have to be strings here or else the object will not be created.
+Alice.bury_gold(5)
+print Alice
+Alice.find_gold(6)
+print Alice
+Alice.sprinkled_with_fairy_dust(2)
+print Alice
+
+# Notes
+    # is put in a game like way but could equally be used for finance, be it a bank account or for a business
+    # origionally the multiplier was fixed, but I made it variable for more interesting encounters.
+    # could add in some random events so characters have to spend gold, and win/loose conditions when they run out of gold
+
+# Notes on week 6b - Tiled Images, visualising objects and aliases, tips and tricks
+    # draw a 4x13 deck layout, need to have a draw handler for a card and the deck
+    # use card center as that is one of the requirement for the draw handler
+    # if you want to use an image from drop box get the share link then replace the www with dl
+    # When using your own images the first time the ncode is run the image is cached, will need to clear image cache to check that all is working well for all people who use the code
+    # aliasing - when you rename an object both the names will access the same object
+    # if you want to create a new object with the same parameters you have to use name = class(etc)
+    # you can create an alias for the list of parameters and use it to create and update multiple objects simulataneously
+    # typing the same list by hand into an object constructor will generate a seemingly identical object, that is independent of the list.
+    # if you change one part of the list the shared state either directly or referencing the specific part of the object changes the list, and all the objects it connects to.
+    # if you want to use one variable shared state to define multiple independent states use the list function.
+        # e.g. list(shared_state) => unliked objects but just using shared_state in init will keep them linked
+        # this is because list creates a local copy of the shared_state
+    # implicitly the init method always returns the object being created
+    # first letter of a class name is capitalised
+    # for loops - know how many time it will loop and cannot change the data you are looping through
+    # bring on the while loop:
+def countdown(n):
+    i = n
+    while i >= 0:
+        print i
+        i -= 1
+countdown(5) -> 5 4 3 2 1 0
+
+    # the equivalent for loop looks like this (remember you are counting backwards!)
+def countdown(n):
+    for i in range(n, -1, -1):
+        print i
+
+    # for has to build a long list then print it out - problematic for large numbers
+    # infinite series will kill your browser, codeskulptor should have a 5s cut out
+
+# Practise Exercises Part 2
+# Create a person class giving name and birthday
+
+class Person:
+
+    def __init__(self, first, last, year):
+        self.first_name = first
+        self.last_name = last
+        self.birth_year = year
+
+    def __str__(self):
+        return "My name is %s %s and I was bornm in %s" % (self.first_name, self.last_name, self.birth_year)
+
+    def full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
+    def age(self, current_year):
+        return current_year - self.birth_year
+        # you don't have to get the year at this point - not well supported in codeskulptor
+
+# 2) return average age of a list of person
+
+def average_age(person_list, current_year):
+    total = 0
+    for p in person_list:
+        total += p.age(current_year)
+    return total / float(len(person_list))
+
+# 3) create the class Student which contains the class person
+    # you don't seem to formally import one class into the other, just use the lowercase name
+
+class Student:
+
+    def __init__(self, person, password):
+        self.person = person
+        self.password = password
+        self.projects = []
+
+    def get_name(self):
+        return self.person.full_name()
+
+    def check_password(self, password):
+        return student.password == password
+
+    def get_project(self):
+        return self.projects()
+
+    def add_project(self, project):
+        return self.projects.append(project)
+
+# 4) Search for students and add their project
+    # only use student objects to manipulate student attributes
+
+def assign(student_list, student_name, student_password, project):
+    for s in student_list:
+        if s.get_name() == student_name and s.check_password(student_password):
+            if s.get_projects().count(project) == 0:
+                s.add_project(project)
+# count is an inbuilt python method that returns the number of times that an item appears in a list - really handy
+# note to self look up more of these very useful python methods
