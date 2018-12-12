@@ -73,6 +73,7 @@ def new_game():
     card_list.extend(range(1, 9))
     random.shuffle(card_list)
     card_grid = [card_list[x:x+GRID] for x in range(0, len(card_list), GRID)]
+    # looking at it this piece of code is redundant as new game is called before you start the draw handler
 
     #rest all flags and counters
     turn_counter = 0
