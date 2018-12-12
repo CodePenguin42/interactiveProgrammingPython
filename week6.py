@@ -520,3 +520,285 @@ def assign(student_list, student_name, student_password, project):
                 s.add_project(project)
 # count is an inbuilt python method that returns the number of times that an item appears in a list - really handy
 # note to self look up more of these very useful python methods
+
+# 5) Start making a game of pairs
+    # build tile class
+    # generate list of duplicate numbers and shuffle
+    # draw a straight line of tiles (boring, improve later), all initially hidden
+#sing it with me "imports, globals, helper functions, class, draw handler, create frame, create objects, start"
+
+# 6) turn over tiles with mouseclick
+
+# 7) add in the rest of the game level logic in the mouse click handler
+
+# imports
+import simplegui, random
+
+# Globals
+TILE_WIDTH = 50
+TILE_HEIGHT = 100
+DISTINCT_TILES = 8
+
+# Helpers - new game
+    # also used to initialise variable / dynamic globals
+def new_game():
+    global my_tiles, state, turns
+
+    # generate a list from 1 - distinct tiles and shuffle
+    tile_list = range(1, DISTINCT_TILES + 1) * 2
+    # previously used the extend method, but you can just multiply lists to create and append a duplicate
+    random.shuffle(tile_list)
+    my_tiles = [Tile(tile_list[t], False, [TILE_WIDTH * t, TILE_HEIGHT]) for t in range(DISTINCT_TILES * 2)]
+    # cannot start a list with for, for lists it "do this" for i in thing - list comprehension
+    # [for t in tile_list: Tile(tile_list[t], False, [TILE_WIDTH * t, TILE_HEIGHT])]
+    # thing is not my_tiles it has to be the numbers 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 other wise t is the numbers 1,2,3,4,5,6,7,8. which when passed to the draw handler stacks cards in the wrong locations
+
+    state = 0
+    turns = 0
+    label.set_text("Turns = " + str(turns))
+
+# Class - Tile
+class Tile:
+
+    # initialise attributes
+    def __init__(self, num, exp, loc):
+        self.number = num
+        self.exposed = exp
+        self.location = loc
+
+    # print the status of the object
+    def __str__(self):
+        return "The number is %s, is exposed is %s, and its location is %s" % (self.number, self.exposed, self.location)
+
+    # get the value on the tile
+    def get_number(self):
+        return self.number
+
+    # return the state of the tile
+    def is_exposed(self):
+        return self.exposed
+
+    # flip tile face up
+    def expose_tile(self):
+        self.exposed = True
+
+    # flip tile face down
+    def hide_tile(self):
+        self.exposed = False
+
+    # draw method for draw handler for each tile
+    def draw_tile(self, canvas):
+        loc = self.location
+        if self.exposed:
+            text_location = [loc[0] + 0.2 * TILE_WIDTH, loc[1] - 0.3 * TILE_HEIGHT]
+            canvas.draw_text(str(self.number), text_location, TILE_WIDTH, "White")
+        else:
+            tile_corners = (loc, [loc[0] + TILE_WIDTH, loc[1]], [loc[0] + TILE_WIDTH, loc[1] - TILE_HEIGHT], [loc[0], loc[1] - TILE_HEIGHT])
+            canvas.draw_polygon(tile_corners, 1, "White", "Green")
+
+    # has a tile been clicked on?
+    def is_selected(self, pos):
+        inside_hor = self.location[0] <= pos[0] < self.location[0] + TILE_WIDTH
+        inside_vert = self.location[1] - TILE_HEIGHT <= pos[1] <= self.location[1]
+        return  inside_hor and inside_vert
+
+# the draw handler
+def draw(canvas):
+    for t in my_tiles:
+        t.draw_tile(canvas)
+
+# handlers - mouseclick
+def click(pos):
+    global state, turns, first_tile, second_tile
+    # need first and second tiles as globals as they are accesses by the if in the else (game logic)
+
+    for t in my_tiles:
+        if t.is_selected(pos) and not t.is_exposed():
+            clicked_tile = t
+            clicked_tile.expose_tile()
+            # these have to be two separate lines cant expose tile and change it's name
+            print type(clicked_tile)
+    # iterate over all the tiles and test if the position of the click lies within the boundaries of that card - ok for short lists not long ones
+    # if that tile has been clicked and isn't already exposed, expose the tile and create a local variable clicked tile and save which tile has been clicked
+
+    # game logic
+        # state 0 before the click
+        # state 1 after first click
+        # state 2 after second click (match or hide), update turns
+
+    if state == 0:
+        state = 1
+        first_tile = clicked_tile
+    elif state == 1:
+        state = 2
+        second_tile = clicked_tile
+        turns += 1
+        label.set_text("Turns = " + str(turns))
+    else:
+        if first_tile.get_number() != second_tile.get_number():
+            first_tile.hide_tile()
+            second_tile.hide_tile()
+        state = 1
+        # assuming you have clicked on another card a third time, this turns over a card and triggers the matching logic
+        first_tile = clicked_tile
+        # esentially you go through state 0 once at the start of the game then loop between state 1 and 2.
+
+
+
+
+# create frame and control objects
+frame = simplegui.create_frame("Pairs", 2 * DISTINCT_TILES * TILE_WIDTH, TILE_HEIGHT)
+frame.add_button("Restart", new_game)
+frame.set_mouseclick_handler(click)
+label = frame.add_label("Turns = 0")
+frame.set_draw_handler(draw)
+
+# start the frame
+new_game()
+frame.start()
+
+# Notes /  Learnt / Advantages and differences with previous method
+    # much neater way of determining wether a tile has been clicked on
+    # globals, new game, class, other handlers, create, start
+    # remember it is set_mouseclick_handler, not add_mouseclick_handler!!
+    # stylistic differences:
+        # I like the way this code loops through the last two states only creates smoother gameplay
+        # iterate over tiles to find the one that has been clicked rather than going from a click location to a tile
+        # they separated out the conditions for flipping over a card I combined them as I don't like leaving blank spaces where I keep expecting code
+        # used is_selected rather than calculating the position of the card and returning the index - easier to adjust to the 2D grid
+    # no fancy win or lose conditions
+    # also they origionlly used a redd border - very not cool
+
+
+
+
+
+
+
+
+
+
+
+# 8) make the 2D version
+
+# imports
+import simplegui, random
+
+# Globals
+TILE_WIDTH = 50
+TILE_HEIGHT = 100
+GRID = 4
+DISTINCT_TILES = GRID *2
+WIDTH = TILE_WIDTH * GRID
+HEIGHT = TILE_HEIGHT * GRID
+
+# Helpers - new game
+def new_game():
+    global my_tiles, state, turns
+
+    tile_list = range(1, DISTINCT_TILES + 1) * 2
+    random.shuffle(tile_list)
+    tile_grid = [tile_list[x:x+GRID] for x in range(0, len(tile_list), GRID)]
+    my_tiles = [Tile(tile_grid[i][j], False, [TILE_WIDTH * i, TILE_HEIGHT * (j + 1)]) for i in range(GRID) for j in range(GRID)]
+    # this generates the correct location and outputs a list of objects, not a nested list
+    #which makes it the same format of data as in the previous version
+
+    state = 0
+    turns = 0
+    label.set_text("Turns = " + str(turns))
+
+# Class - Tile
+class Tile:
+
+    # initialise attributes
+    def __init__(self, num, exp, loc):
+        self.number = num
+        self.exposed = exp
+        self.location = loc
+
+    # print the status of the object
+    def __str__(self):
+        return "The number is %s, is exposed is %s, and its location is %s" % (self.number, self.exposed, self.location)
+
+    # get the value on the tile
+    def get_number(self):
+        return self.number
+
+    # return the state of the tile
+    def is_exposed(self):
+        return self.exposed
+
+    # flip tile face up
+    def expose_tile(self):
+        self.exposed = True
+
+    # flip tile face down
+    def hide_tile(self):
+        self.exposed = False
+
+    def is_selected(self, pos):
+        inside_hor = self.location[0] <= pos[0] < self.location[0] + TILE_WIDTH
+        inside_vert = self.location[1] - TILE_HEIGHT <= pos[1] <= self.location[1]
+        return  inside_hor and inside_vert
+        #this actually works in 2D not just one as it looks at everything relative to loc, which is defined in the 2D grid separate to the game logic
+
+    # draw method for draw handler for each tile
+    def draw_tile(self, canvas):
+        loc = self.location
+        if self.exposed:
+            text_location = [loc[0] + 0.2 * TILE_WIDTH, loc[1] - 0.3 * TILE_HEIGHT]
+            canvas.draw_text(str(self.number), text_location, TILE_WIDTH, "White")
+        else:
+            tile_corners = (loc, [loc[0] + TILE_WIDTH, loc[1]], [loc[0] + TILE_WIDTH, loc[1] - TILE_HEIGHT], [loc[0], loc[1] - TILE_HEIGHT])
+            canvas.draw_polygon(tile_corners, 1, "White", "Green")
+
+
+# the draw handler
+def draw(canvas):
+    for i in range(GRID ** 2):
+        my_tiles[i].draw_tile(canvas)
+
+# handlers - mouseclick
+def click(pos):
+    global state, turns, first_tile, second_tile
+
+    # this is done in separate steps to keep it robust
+    for tile in my_tiles:
+        if tile.is_selected(pos):
+            clicked_tile = tile
+
+    if clicked_tile.is_exposed():
+        return
+
+    clicked_tile.expose_tile()
+
+    if state == 0:
+        state = 1
+        first_tile = clicked_tile
+    elif state == 1:
+        state = 2
+        second_tile = clicked_tile
+        turns += 1
+        label.set_text("Turns = " + str(turns))
+    else:
+        if first_tile.get_number() != second_tile.get_number():
+            first_tile.hide_tile()
+            second_tile.hide_tile()
+        state = 1
+        first_tile = clicked_tile
+
+
+# create frame and control objects
+frame = simplegui.create_frame("Pairs", WIDTH, HEIGHT)
+frame.add_button("Restart", new_game)
+frame.set_mouseclick_handler(click)
+label = frame.add_label("Turns = 0")
+frame.set_draw_handler(draw)
+
+# start the frame
+new_game()
+frame.start()
+
+# to make the 1D game 2D, just change the way the loc variable is created pass it to the Tile class.
+# THE GAME LOGIC REMAINS UNCHANGED
+# when bored add a pretty border to the game!
