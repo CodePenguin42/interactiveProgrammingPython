@@ -44,6 +44,9 @@
 # they split out the cards rank, value, and suit differently, meaning the game logic only has to handle the ace being awkward.
 # their way seems simpleer... drat... it aint called the learning curve for nothing...
 
+# code skulptor link
+# http://www.codeskulptor.org/#user45_Z34YSnWerAMKCCg.py
+
 # imports
 import random, simplegui
 
@@ -63,9 +66,10 @@ card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-ass
 # cards are designed from the center to make the drawing clearer
 
 # global variables
-in_play = Flase
+in_play = False
 outcome = ""
 score = 0
+total = 0
 
 # globals for cards
 SUITS = ('C', 'S', 'H', 'D')
@@ -88,7 +92,7 @@ class Card:
         else:
             self.suit = None
             self.rank = None
-            print "Invalid card: ", suit, rank
+            #print "Invalid card: ", suit, rank
         # This ensures that you are only going to try and use real cards, I wonder if it stops people from drawing the same card twice later on...
 
     # Define the string
@@ -111,15 +115,16 @@ class Card:
                      CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(self.suit))
         # firstly the code is ligned up neatly one under the other - nicer presentation and easier for error checking
         # index method returns the index of the specifics caqrds rank or suit in their respective list - this is how they navigate the 2D drawing
-        canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER, pos[1] + CARD_CENTER[1]], CARD_SIZE)
+        canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
         # image location, portion location, portion size, draw location, draw size
         # draw location is defined from the top left hand corner as adding pos and center
+
 
 # Classes - Hand
 class Hand:
     """The actions and logic the player uses, defined as a group of cards"""
 
-    # Initialise the class, no arguments as it is just a wrapper
+    # Initialise the class, no arguments as it is just a wrapper for a group of card objects
     def __init__(self):
         self.hand = []
 
@@ -139,11 +144,35 @@ class Hand:
 
     # sum the value of the hand
     def get_value(self):
-        pass
+
+        global total
+
+        total = 0
+        has_ace = False
+
+        for card in self.hand:
+            total += VALUES.get(card.get_rank(),"Bad input")
+            if card.get_rank() == 'A':
+                has_ace = True
+
+        if has_ace:
+            #could put a statement here giving the two options, or just the score
+            if total <= 11:
+                total += 10
+                return total
+            else:
+                return total
+        else:
+            return total
+
+
 
     # draw the hand on the canvas - pos here refers to the position of the hand (row of cards) on the canvas
     def draw(self, canvas, pos):
-        pass
+        for card in self.hand:
+            card.draw(canvas, [pos[0] + 86 * self.hand.index(card), pos[1]])
+            # still are passing the top left hand corner to the draw method from the draw function [114,450]
+
 
 # Class - deck
 class Deck:
@@ -175,61 +204,124 @@ class Deck:
 
 #helper and handler function - new game
 def restart():
+    """Deal a new game, reset flags"""
+
     global outcome, in_play, score
     global new_deck, player, dealer
 
-    #reset flags and statuses
-    in_play = True
-    score = 0
-    outcome = ""
+    #If try to reset a game mid play
+    if in_play:
+        score -= 1
+        outcome = "No cheating"
+    else:
+        #reset flags and statuses
+        in_play = True
+        #score = 0 - want to keep track of this!
+        outcome = ""
 
-    #Create a new deck and shuffle it
-    new_deck = Deck()
-    new_deck.shuffle()
+        #Create a new deck and shuffle it
+        new_deck = Deck()
+        new_deck.shuffle()
 
-    #create a player and add cards to their hand
-    player = Hand()
-    player.add_card(new_deck.deal_card())
-    player.add_card(new_deck.deal_card())
-    print "Players hand"
-    print player
+        #create a player and add cards to their hand
+        player = Hand()
+        player.add_card(new_deck.deal_card())
+        player.add_card(new_deck.deal_card())
+        player.get_value()
+        #print "Players hand"
+        #print player
 
-    #create a dealer and add cards to their hand
-    dealer = Hand()
-    dealer.add_card(new_deck.deal_card())
-    dealer.add_card(new_deck.deal_card())
-    print "Dealers hand"
-    print dealer
+        #create a dealer and add cards to their hand
+        dealer = Hand()
+        dealer.add_card(new_deck.deal_card())
+        dealer.add_card(new_deck.deal_card())
+        #print "Dealers hand"
+        #print dealer
 
-    #draw board
 
 
 #Handler - Hit
-def hit(click):
-    pass
-    # if not bust deal another card, calculate the hand value
+def hit():
+    """If they aren't bust deal the player a new card, calculate if they are bust"""
 
+    global outcome, score, in_play, total
+
+    if in_play:
+        if player.get_value() <= 21:
+            player.add_card(new_deck.deal_card())
+            if player.get_value() > 21:
+                outcome = "You are bust"
+                score -= 1
+                in_play = False
+        else:
+            outcome = "You are bust"
+            in_play = False
+            score -= 1
 
 
 # Handler - Stand
-def stand(click):
-    # play the dealers hand
-    # decide the winner
-    # update score
-    pass
+def stand():
+    """If player has not busted play the dealers hand"""
+
+    global score, outcome, in_play
+
+    #Play the dealers hand, decide the winner, update the scores and output message
+    in_play = False
+    if player.get_value() <= 21:
+        while dealer.get_value() < 17:
+            dealer.add_card(new_deck.deal_card())
+            #print dealer
+            #print str(dealer.get_value())
+        if dealer.get_value() > 21:
+            outcome =  "Dealer is bust, player wins"
+            score += 1
+        elif dealer.get_value() < player.get_value():
+            outcome = "Congratulations you win"
+            score += 1
+        elif dealer.get_value() > player.get_value():
+            outcome = "Commiseration you lose"
+            score -= 1
+        elif dealer.get_value() == player.get_value():
+            outcome = "It's a tie, the dealer wins"
+            score -= 1
+    else:
+        outcome = "You are bust"
 
 
 #Handler - draw handler
 def draw(canvas):
-    #draw board elements
+    """Draw all the various aspects of the game"""
+
+    #draw player hand
+    player.draw(canvas, [114, 450])
+
+    #draw dealer hand
+    dealer.draw(canvas, [114, 250])
+
     #draw deck
-    #draw cards
-    pass
+    canvas.draw_image(card_back, CARD_BACK_CENTER, CARD_BACK_SIZE, [14 + CARD_BACK_CENTER[0], 250 + CARD_BACK_CENTER[1]], CARD_BACK_SIZE)
+
+    #If in play cover hole card
+    if in_play:
+        canvas.draw_image(card_back, CARD_BACK_CENTER, CARD_BACK_SIZE, [114 + CARD_BACK_CENTER[0], 250 + CARD_BACK_CENTER[1]], CARD_BACK_SIZE)
+
+    #draw Title
+    canvas.draw_text("Blackjack", [200, 70], 50, "Black")
+
+    #Draw outcome
+    canvas.draw_text(outcome, [100, 150], 20, "Black")
+
+    #Draw score
+    canvas.draw_text("Score: " + str(score), [400, 150], 20, "Black")
+
+    #Draw hand value
+    if in_play:
+        canvas.draw_text("Hand total: "+ str(total), [114, 580], 20, "Black")
+
 
 #Create frame and register
-frame = create_frame.simplegui("BlackJack", WIDTH, HEIGHT)
+frame = simplegui.create_frame("BlackJack", WIDTH, HEIGHT)
 frame.set_canvas_background("Green")
-# Need a separate command to change the background colour
 frame.add_button("Deal", restart, 100)
 frame.add_button("Hit", hit, 100)
 frame.add_button("Stand", stand, 100)
@@ -249,11 +341,31 @@ frame.start()
     # CHECK ARE YOU USING self.thing inside the object
     # CHECK do you have all the brackets in the right place, e.g. () [] and no brackets, are any unclosed
     # do you mean len(thing) or range(len(thing))?
+    # any canvas.draw_text you dynamically want to update you need to make sure it is a global where it is modified
+    # if you want to dynamically upate a lable then you need to use set text
+    # codeskulptor does not like """ unless they are tabbed in
+    # put the draw handler for updating the score into the get_value method, then regualte it's use by using an if in play statement
+    # print stuff out as you are building - this helps with debugging, as you might be passing stuff as a string or a touple by accident
+    # all each method has to do is isolate and return the thing in question e.g. pop a card, doesn't need ot save it anywhere, it's transient
+    # Interesting but unhelpful self.__name__ will return the name of the class you are in, not the name of the object :(
 
 # Want to do an analysis of their testing templates as they seem like a good thing to know how to build for yourself
+    # A testing template seems to be all the relevant globals, the core and meta classes that you want to test
+    # then examples of making each class or meta class, then printing the reult and the type
+    # then calling methods on the object and printing the result and type
+    # printing the result tests the __str__ function
+    # compare the output you are getting to the output that you are expecting!
+    # printing the type ensures that you are generating data of the correct type
 # Also an analysis of their instructions - gives you a good order to build projects
     # Rule of thumb 0) - design objects, their (inter)actions, then methods, build bones of each
     # Rule of thumb 1) - get the code in before the pictures
     # Rule of thumb 2) - fill in init and strings then start with the most fundermental object and build in the methods
-    # all each method has to do is isolate and return the thing in question e.g. pop a card, doesn't need ot save it anywhere, it's transient
-    # Interesting but unhelpful self.__name__ will return the name of the class you are in
+    # then add in the pretty card graphics - making sure they load and everyone can access them
+    # then add in the text and sort out when and where it is updated
+    # when you have a working game, try your best to break it click all the buttons when you shouldn't then add code to negate the effects
+
+# Improvements:
+    # Functional but visually boring, could better center text or use different images
+    # could add in some more rules
+    # I wonder if I could build a game of snap?!
+    # make it appear that the cards move from the deck to player / dealers hand?
