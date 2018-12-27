@@ -122,7 +122,7 @@ def find_card(pos):
 def draw(canvas):
 
     #could probably do something clever like if it isn't a 2 return false, so when it's all 2 or true you do the win screen.
-    if card_matrix == win_matrix:
+    if card_matrix == win_matrix: #- when do you update the win matrix?
         win_text_width = frame.get_canvas_textwidth("Congratulations, you win!!", 20) * 0.5
         canvas.draw_text("Congratulations, you win!!", [(WIDTH //2 - win_text_width), HEIGHT // 2], 20, "White")
     elif turn_counter >= GRID * 5:

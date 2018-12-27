@@ -14,6 +14,7 @@
 #win function and win screen - Done
 #test - Done
 #implement cool ideas - for v2+
+# DO IT WITH OBJECTS!! - and with the inside function / method
 
 
 
@@ -279,3 +280,4 @@ frame.start()
     #velocity of paddle to add to ball velocity, if gave paddles acceleration this would be quite fun
     #tennis or table tennis rules for scoring and win conditions
     #multiple balls, a growing ball splits when gets to big
+    # collect bonuses that appear on screen

@@ -432,7 +432,7 @@ print Alice
     # draw a 4x13 deck layout, need to have a draw handler for a card and the deck
     # use card center as that is one of the requirement for the draw handler
     # if you want to use an image from drop box get the share link then replace the www with dl
-    # When using your own images the first time the ncode is run the image is cached, will need to clear image cache to check that all is working well for all people who use the code
+    # When using your own images the first time the code is run the image is cached, will need to clear image cache to check that all is working well for all people who use the code
     # aliasing - when you rename an object both the names will access the same object
     # if you want to create a new object with the same parameters you have to use name = class(etc)
     # you can create an alias for the list of parameters and use it to create and update multiple objects simulataneously

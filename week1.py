@@ -121,7 +121,7 @@ powerball_two()
 
 #1) even tester function
 def is_even(number):
-    """tests the parity of a number, return true of even"""
+    """tests the parity of a number, return true of even""
     return (number % 2) == 0
 
 #test of the is_even function
@@ -180,7 +180,7 @@ name_and_age(Steve, 20)
 
 #7) printing digits of numbers 1-99, excluding 0 and 100
 def print_digits(number):
-        """printing digits of a two digit positive number, with some error validation"""
+        """printing digits of a two digit positive number, with some error validation""
     if (number > 100 or number < 0):
         print "Error: Input is not a two-digit number."
     else:
@@ -215,7 +215,7 @@ print name_lookup("Stephen")
 
 #9) Pig latin generator, can make this way more complex if you want!
 def pig_latin(word):
-    """makes words into pig latin"""
+    """makes words into pig latin""
     if (word[0] = "a") or (word[0] = "e") or (word[0] = "i") or (word[0] = "o") or (word[0] = "u"):
         return word + "ay"
     else:
@@ -235,7 +235,7 @@ def smaller_root(a, b, c):
     if determinant < 0 or a == 0:
         return "Error: No real solution"
     else:
-        """finding the negative roots"""
+        """finding the negative roots""
         determinant_sqrt = determinant ** 0.5
         if a > 0:
             negative_root = (-b - determinant_sqrt) / (2*a)

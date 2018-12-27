@@ -99,3 +99,5 @@ frame.start()
 #if you enter a negative number it still counts as a guess, but an if statement here stops the game...
 #can I clear the input field?
 #reset the random number when you press the reset button!
+
+# Improvements - do this with objects as object revision

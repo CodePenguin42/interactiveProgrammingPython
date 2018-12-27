@@ -136,3 +136,6 @@ frame.start()
 #when the game is over, stop timer!
 #need draw handler before the start click in the start and register section to make sure you don't start with a banl screen
 #time delays are harder than I thought, it's probably to do with the draw refresh
+
+# would have to use a timer to create a delay in the program, if less than the required number of ticks then would have to do nothing, once ticks exceeded carry on with program.
+# this would be nice for adding on delays moving between the screens in later games.
