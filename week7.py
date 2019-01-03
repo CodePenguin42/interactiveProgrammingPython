@@ -11,14 +11,14 @@
     # self.angle += self.angle_vel - key handler / person controls self.angle vel
     # self.angle is used as the last argument for the space ships draw method
     # update position -> position += velocity
-    # update velocity -> velocity += position
+    # update velocity -> velocity += acceleration
     # When doing this in python would have to do it component at time.
     # This means the ship needs more fields:
         # self.pos -> ships poition
         # self.vel -> ships velocity
         # self.angle -> see above
         # self.thrust -> boolean, is the ship accelerating?
-    #  So you update the position of the ship image if ther is thrust:
+    #  So you update the position of the ship image if there is thrust:
     # if self.thrust:
         # self.vel[0] += forward[0] * const
         # self.vel[1] += forward[1] * const
