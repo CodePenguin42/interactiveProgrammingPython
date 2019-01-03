@@ -471,7 +471,7 @@ class Person:
         self.birth_year = year
 
     def __str__(self):
-        return "My name is %s %s and I was bornm in %s" % (self.first_name, self.last_name, self.birth_year)
+        return "My name is %s %s and I was born in %s" % (self.first_name, self.last_name, self.birth_year)
 
     def full_name(self):
         return "%s %s" % (self.first_name, self.last_name)
