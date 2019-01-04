@@ -23,6 +23,7 @@ HEIGHT = 600
 score = 0
 lives = 3
 time = 0
+fire = False
 
 #ship globals
 TURN_ANGLE_VEL_INC = 0.02
@@ -174,19 +175,22 @@ class Ship:
     def ship_right(self):
         # spin ship clockwise
         self.angle_vel += TURN_ANGLE_VEL_INC
-        pass
 
     # this lives in the ship class because the ship has the behaviour of shooting missiles, also makes the code easier as the missile moves relative to the ship
     def shoot(self):
-        #update missile spawn position
+        global fire, a_missile
+        # update missile spawn position
         miss_vector = angle_to_vector(self.angle)
-        miss_pos = [self.pos[0] + miss_vector[0], self.pos[1] + miss_vector[1]]
+        miss_pos = [self.pos[0] + miss_vector[0] * self.radius, self.pos[1] + miss_vector[1] * self.radius]
 
-        #update missile speed
-        miss_vel = [self.vel[0] * 1, self.vel[1] * 1]
+        # update missile speed
+        miss_vel = [miss_vector[0] * 5, miss_vector[1] * 5]
 
+        # play missile sound
         a_missile = Sprite(miss_pos, miss_vel, 0, 0, missile_image, missile_info, missile_sound)
-        #play missile sound
+
+        fire = True
+
 
     # Keyup methods:
     def stop_left(self):
@@ -264,7 +268,8 @@ def draw(canvas):
     # draw ship and sprites
     my_ship.draw(canvas)
     a_rock.draw(canvas)
-    a_missile.draw(canvas)
+    if fire:
+        a_missile.draw(canvas)
         # the objects are created then when the frame starts the draw handler is called, it just looks like you are drawing objects before you create them
 
 # timer handler that spawns a rock once a second
@@ -298,16 +303,16 @@ a_rock = Sprite([WIDTH / 3, HEIGHT / 3], [1, 1], 0, 0.02, asteroid_image, astero
 
 # Keyhandlers - they might go here they might not
 # input dictionary for keydown:
-down_inputs = {"up" : thrusters,
-                "left" : ship_left,
-                "right" : ship_right,
-                "space" : shoot
+down_inputs = {"up" : my_ship.thrusters,
+                "left" : my_ship.ship_left,
+                "right" : my_ship.ship_right,
+                "space" : my_ship.shoot
                 }
 
 # input dictionary for keyup:
-up_inputs = {"up" : thrusters,
-                "left" : stop_left,
-                "right" : stop_right
+up_inputs = {"up" : my_ship.thrusters,
+                "left" : my_ship.stop_left,
+                "right" : my_ship.stop_right
             }
 
 
@@ -316,14 +321,15 @@ up_inputs = {"up" : thrusters,
 def key_down(key):
     for i in down_inputs:
         if key == simplegui.KEY_MAP[i]:
-            my_ship.down_inputs[i]()
+            down_inputs[i]()
 # look up the key in the dictionary then perform the function you find there
+# codeskulproe doesn't like it when you put the my_ship. in the for loop, e.g. my_ship.up_inputs[i]() - check
 
 # Keyup eventhandler
 def key_up(key):
     for j in up_inputs:
         if key == simplegui.KEY_MAP[j]:
-            my_ship.up_inputs[j]()
+            up_inputs[j]()
 
 #There is a much neater way of handling the left and right arrow keys, and could tidy up the dictionary but that is for the next iteration.
 
@@ -337,3 +343,5 @@ timer = simplegui.create_timer(1000.0, rock_spawner)
 # Start
 timer.start()
 frame.start()
+
+# Nip to shops then create variables for the vrious magic numbers like the ship turning and the missile speed.
