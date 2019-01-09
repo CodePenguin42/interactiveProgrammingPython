@@ -39,3 +39,32 @@ self.radius = info.get_radius()
 # good number ranges:
     # rock angle_vel 0.02 - 0.08
     # rock vel - rand float from 0- 2pi, then convert to cartesian.
+
+# Comparison of the thing I created at the end of wk 7 and the template given in week 8 (week8_template.py):
+# imports:
+    # I do mine on the same line, they break theirs out onto separate lines, any reason why?
+# Classes:
+    # I made a str method, to print out all the fields in a human understandable form, this step was ommited from the template; but I found it good practice
+# Ship.draw() and ship.update():
+    # I left the updates in the draw handler method, rather than putting them in the update method, the calling update then calling draw.. oops
+# ship.thrusters()
+    # rewind sound in a different place, they turn thrust on rather than thrust true.
+# keyhandler functions:
+    # they consolidate the up right and down left into the same function, much neater.
+    # but they do an elif where I did a dictionary
+    # they got rid of the turn angle vel inc
+# shoot function:
+    # the fire boolean flag seems to have dissapeared
+# Sprite:
+    # I have put the updates inside the draw handler - not helpful when update becomes more complex
+# click mousehandler:
+    # They have added one to give a start screen, I like the inside thing though, would be helpful as a stand alone function in other projects
+# Rock spawner:
+    # different ways of generating a random number random.random() vs random.choice
+
+# General conclusions:
+    # consolidate similar keyhandler functions, but also put into a dictionay as I like dictoinaries and the mapping is right
+    # reduce the number of 'magic numbers' in code, bring back turn angle vel inc!
+    # split out the update from the draw handler
+
+    # Although my code is different I can pick up working from their template - go skills

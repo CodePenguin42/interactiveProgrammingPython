@@ -66,6 +66,7 @@ class Sprite:
 # Sets
 rock_group = set([])
 missile_group = set ([])
+explosion_group = set([])
 
 # General Advice and helpful code:
 
@@ -101,3 +102,53 @@ def click(pos):
     # when out of lives should set vel to 0, could also reset angle
     # cant still thrust and twitch so would have to disable the keyhandlers and reenable at the right time
     # moved UI draw_text later in draw handler so it is always on top.
+    # hearts for lives
+    # hall of fame - scores in order with name
+    # make ship class inherit from sprite class
+    # make ship a sprite so it can explode!
+
+
+# Comparison of mine and other dudes code:
+# see rice_rocks_example.py
+    # They put the process sprite group, group collide, and group group collide alongside the mathematical helper functions
+    # in the group collide:
+        # they use a boolean flag collided set it to false at the start and then if there is a collsion modify the flag. Then return the flag at the end of the function
+        # they create and add a sprite to the explosion group at the same time on one line
+        # they use the set method set.remove(thing) which is similar to set.discard(thing) while iterating over the set - which I thought you couldn't do
+        # remove will throw and error if you try and remove something that isn't there, discard won't throw an error
+        # if you want to remove a random item from a set you can just pop one, as it is an unordered set so removing the last one is random.
+    # in group group collide:
+        # they use set(group), to create a copy of the group in the same line as the for statement
+        # they split out the running og the group collide function into a variable where I leave it on one line.
+        # they use remove where I have used discard
+    # process sprite group:
+        # they draw all the sprites then if the update returns false they remove it in the for loop
+    # Ship - draw method:
+        # Consolidate the similar draw statements
+    # ship.shoot()
+        # put the two vector component calculations on different lines for presentation reasons
+        # create and add sprite on the same line
+    # sprite.update()
+        # return the value of the inequality self.age > self.lifespan, rather than using an if else; neat
+    # sprite.collide()
+        # same as sprite.update()
+    # draw(canvas)
+        # split out the draw image arguments onto their own lines - I think this looks ugly on a wide screen
+        # they increased the rocks velocity based on score in the draw handler not in the rock spawner
+        # UI draw statements are below everything but the splash screen
+        # they process ship - rock, and missile - rock collisions in the same statment. As you can't have fired at a rock that you hit e.g. if hit a rocck lose a life, else gain a point for every collision of missile and rock
+        # Then they put the game over logic, they overwrite the rock set with a blank set rather than deleting each object
+    # Rock spawner:
+        # while the distance between a rock and the ship is less than 100 move it to the ede of the screen then add it to the group
+
+# General conclusions:
+    # the consolidate more stuff onto one line - fewer lines but might be harder to read
+    # they modify the thing they are iterating over - I thought this was a no
+    # they use flags and/or intermediate variables to better consolidate changing one thing in a draw function - this I will use to refactor my code
+    # vector components on different lines, arguments or components on different lines should be for when you have similarities in the code structures or else to me it looks ugly
+    # returning true or false flags based on inequalities rather than if else statements
+    # the collisions and sprite processing functions can go above the sprites next to the mathematical helper functions
+    # more than one way of processing the same logic that both work
+    # instead of emptying each element from a set, replace it with an empty one - faster
+    # much neater way of avoiding ship rock collisions - add this concept to refactor
+    # they have done less tweaks on what happens between games e.g. stopping the music and the ship from moving, but very nice neat code.
