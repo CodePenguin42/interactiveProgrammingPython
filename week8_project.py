@@ -192,8 +192,12 @@ class Sprite:
             sound.play()
 
     def draw(self, canvas):
-        canvas.draw_image(self.image, self.image_center, self.image_size,
+        center = list(self.image_center)
+        if self.animated:
+            center[0] = self.image_center[0] + (self.image_size[0] * self.age)
+        canvas.draw_image(self.image, center, self.image_size,
                           self.pos, self.image_size, self.angle)
+        # This is clever it makes a copy of the image center then modifies it if it is animated, rather than creating a new variable and having two draw statements in the if and else sections
 
     def update(self):
         # update angle
@@ -258,11 +262,14 @@ def click(pos):
 
 # group collide helper function
 def group_collide(group, other_object):
+    global explosion_group
     # if there is a collision remove the object from the group
     remove_set = set([])
     for object in group:
         if object.collide(other_object):
             remove_set.add(object)
+            an_explosion = Sprite(object.pos, [0, 0], 0, 0, explosion_image, explosion_info, explosion_sound)
+            explosion_group.add(an_explosion)
     group.difference_update(remove_set)
     if len(remove_set) > 0:
         return True
@@ -281,7 +288,6 @@ def group_group_collide(g1, g2):
     return collisions
     # you can make a non aliased copy of a set, awesome
     # iterate over a copy (non aliased) of a list then remove those elements that collide from the origional list
-
 
 
 # helper function to manage and draw sprites:
@@ -314,6 +320,7 @@ def draw(canvas):
     # update and draw Sprites (missiles and rocks)
     process_sprite_group(rock_group, canvas)
     process_sprite_group(missile_group, canvas)
+    process_sprite_group(explosion_group, canvas)
 
     # draw UI
     canvas.draw_text("Lives", [50, 50], 22, "White")
@@ -390,6 +397,7 @@ timer = simplegui.create_timer(1000.0, rock_spawner)
 # Sets
 rock_group = set([])
 missile_group = set ([])
+explosion_group = set([])
 
 
 # get things rolling
