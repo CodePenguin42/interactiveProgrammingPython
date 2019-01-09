@@ -106,6 +106,7 @@ def click(pos):
     # hall of fame - scores in order with name
     # make ship class inherit from sprite class
     # make ship a sprite so it can explode!
+    # I want to make harts instead of a life counter, make the ship look wrecked as it takes hits, make it explode when you have no lives, and spawn random power ups, and make smaller asteroids appear when you hit a bigger one!!
 
 
 # Comparison of mine and other dudes code:
@@ -142,8 +143,8 @@ def click(pos):
         # while the distance between a rock and the ship is less than 100 move it to the ede of the screen then add it to the group
 
 # General conclusions:
-    # the consolidate more stuff onto one line - fewer lines but might be harder to read
-    # they modify the thing they are iterating over - I thought this was a no
+    # they consolidate more stuff onto one line - fewer lines but might be harder to read
+    # they create a set to iterate over then modify the origional
     # they use flags and/or intermediate variables to better consolidate changing one thing in a draw function - this I will use to refactor my code
     # vector components on different lines, arguments or components on different lines should be for when you have similarities in the code structures or else to me it looks ugly
     # returning true or false flags based on inequalities rather than if else statements
@@ -152,3 +153,41 @@ def click(pos):
     # instead of emptying each element from a set, replace it with an empty one - faster
     # much neater way of avoiding ship rock collisions - add this concept to refactor
     # they have done less tweaks on what happens between games e.g. stopping the music and the ship from moving, but very nice neat code.
+
+# Magic number dump:
+ACC_MULT = 0.1
+DEC_MULT = 0.99
+TURN_ANGLE_VEL_INC = 0.05
+MISSILE_BOOST = 6
+ROCK_SPAWN = 1000.0
+ROCK_SCORE_RATE = (1 + score / 5.0)
+MAX_ROCKS = 12
+SPAWN_DISTANCE = 100
+ROCK_OFFSET = 150
+BG_RATE = 4
+
+# As they are so similar I would like to make the ship clas sinherit from the sprite class as they have many of the same fields, the methods on the other hand are so different that it isn't worth it, you would have to make a whole new set of methods for the ship anyways.
+
+# Post Course Notes:
+    # good resource - python.org
+    # python 2 vs 3, minor differences
+        # 2 more packages, "tried and true" -> what I have learn't with
+        # 3 new version, activley developed
+    # python 2 or 3 ok on windows, linux comes with it installed, apple is complicated
+    # I have learnt event driven programming
+    # shell -> console that outputs from the module (where code is), but can take code itself.
+    # http://wiki.python.org/moin/UsefulModules#GUI
+        # pick a gui like simplegui, or fits your tastes and needs
+        # tkinter comes with python already installed and is easy to access, or WxPython
+    # http://wiki.python.org/moin/PythonGameLibraries
+        # these are better for building games not guis
+        # pygame is popular, robust and well supported <- start here
+        # pyglet or pyopenGL- if you want OpenGL
+    #don't often use global variables as there is limited namespace
+        # put stuff in game state Class (lives, in play, use methods only to modify fields, )
+        # have one global variable that is an instance of the game state class
+        # also good for security - stops stuff being modified by outside force or by accident:
+            # e.g. lives is a field of game, create a lose life method, create an instance of game, when the player needs to lose a life use game.lose_life() -> you are not directly modifying the global lives.
+    # Good site for reviewing MOOCs
+        # https://www.coursetalk.com/providers/coursera/courses/an-introduction-to-interactive-programming-in-python/write-review
+        # https://www.class-central.com/review/new/408
