@@ -191,3 +191,4 @@ BG_RATE = 4
     # Good site for reviewing MOOCs
         # https://www.coursetalk.com/providers/coursera/courses/an-introduction-to-interactive-programming-in-python/write-review
         # https://www.class-central.com/review/new/408
+# everything is awesome
